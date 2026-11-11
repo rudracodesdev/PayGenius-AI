@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PayGenius AI Engine</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <script src="https://www.paypal.com/sdk/js?client-id=sb&currency=USD"></script>
+</head>
+<body>
+    <header class="navbar">
+        <div class="logo">PayGenius <span>AI</span></div>
+        <div class="badge">PayPal AI Sandbox Suite</div>
+    </header>
+
+    <main class="container">
+        <!-- AI Generator Section -->
+        <section class="card">
+            <h2>AI Prompt to Invoice Generator</h2>
+            <p>Generate smart invoices with natural language descriptions.</p>
+            <div class="input-group">
+                <input type="text" id="ai-prompt" placeholder="e.g. Charge Acme Corp $350.00 for custom API tuning and cloud pipelines" />
+                <input type="email" id="ai-email" placeholder="client@company.com" />
+                <button onclick="generateInvoice()" class="btn-primary">Generate Invoice</button>
+            </div>
+        </section>
+
+        <!-- Active Invoices -->
+        <section class="card">
+            <h2>Active Invoices</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Invoice ID</th>
+                            <th>Client</th>
+                            <th>Description</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Checkout</th>
+                        </tr>
+                    </thead>
+                    <tbody id="invoice-rows">
+                        {% for inv in invoices %}
+                        <tr>
+                            <td><strong>{{ inv.invoice_id }}</strong></td>
+                            <td>{{ inv.client_name }}<br><small>{{ inv.client_email }}</small></td>
+                            <td>{{ inv.description }}</td>
+                            <td>${{ "%.2f"|format(inv.amount) }}</td>
+                            <td><span class="status-pill status-{{ inv.status.lower() }}">{{ inv.status }}</span></td>
+                            <td>
+                                {% if inv.status == 'PENDING' %}
+                                    <button class="btn-pay" onclick="openPayModal('{{ inv.invoice_id }}', '{{ inv.amount }}')">Pay with PayPal</button>
+                                {% else %}
+                                    <span class="text-muted">Settled</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Fraud & Ledger Section -->
+        <section class="card">
+            <h2>PayGuard AI Risk & Transaction Ledger</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>PayPal Tx ID</th>
+                            <th>Invoice</th>
+                            <th>Amount</th>
+                            <th>Risk Score</th>
+                            <th>Risk Level</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for tx in transactions %}
+                        <tr>
+                            <td><code>{{ tx.paypal_order_id }}</code></td>
+                            <td>{{ tx.invoice_id }}</td>
+                            <td>${{ "%.2f"|format(tx.amount) }}</td>
+                            <td>{{ tx.risk_score }}%</td>
+                            <td><span class="risk-pill risk-{{ tx.risk_status.lower() }}">{{ tx.risk_status }}</span></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <!-- PayPal Checkout Modal -->
+    <div id="payment-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closePayModal()">&times;</span>
+            <h3 id="modal-invoice-title">Complete Checkout</h3>
+            <div id="paypal-button-container"></div>
+        </div>
+    </div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

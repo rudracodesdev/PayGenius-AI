@@ -1,0 +1,12 @@
+{
+  "name": "paypal-ai-hackathon",
+  "version": "1.0.0",
+  "description": "PayPal AI Hackathon Submission: Autonomous Invoicing & Intelligent Checkout",
+  "scripts": {
+    "start": "uvicorn main:app --reload",
+    "seed": "python seed_demo_data.py"
+  },
+  "keywords": ["paypal", "hackathon", "fastapi", "ai-checkout"],
+  "author": "Hackathon Builder",
+  "license": "MIT"
+}
