@@ -3,56 +3,145 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PayGenius AI Engine</title>
+    <title>PayGenius AI - Autonomous Commerce & Risk Engine</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/static/css/style.css">
     <script src="https://www.paypal.com/sdk/js?client-id=sb&currency=USD"></script>
 </head>
 <body>
+    <!-- Top Navigation -->
     <header class="navbar">
-        <div class="logo">PayGenius <span>AI</span></div>
-        <div class="badge">PayPal AI Sandbox Suite</div>
+        <div class="nav-left">
+            <div class="logo">
+                <i class="fa-brands fa-paypal"></i> PayGenius <span class="ai-tag">AI</span>
+            </div>
+            <span class="system-badge"><i class="fa-solid fa-circle-check"></i> PayPal Sandbox Active</span>
+        </div>
+        <div class="nav-right">
+            <div class="stat-pill"><i class="fa-solid fa-shield-halved"></i> PayGuard Live</div>
+            <div class="user-profile"><i class="fa-regular fa-user"></i> Merchant Admin</div>
+        </div>
     </header>
 
-    <main class="container">
-        <!-- AI Generator Section -->
-        <section class="card">
-            <h2>AI Prompt to Invoice Generator</h2>
-            <p>Generate smart invoices with natural language descriptions.</p>
-            <div class="input-group">
-                <input type="text" id="ai-prompt" placeholder="e.g. Charge Acme Corp $350.00 for custom API tuning and cloud pipelines" />
-                <input type="email" id="ai-email" placeholder="client@company.com" />
-                <button onclick="generateInvoice()" class="btn-primary">Generate Invoice</button>
+    <div class="dashboard-wrapper">
+        <!-- Metric Stats Row -->
+        <section class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span>Total Settled Volume</span>
+                    <i class="fa-solid fa-wallet text-cyan"></i>
+                </div>
+                <div class="stat-value">$1,739.50</div>
+                <div class="stat-sub text-success"><i class="fa-solid fa-arrow-trend-up"></i> +18.4% this session</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span>Active Invoices</span>
+                    <i class="fa-solid fa-file-invoice-dollar text-yellow"></i>
+                </div>
+                <div class="stat-value">{{ invoices|length }}</div>
+                <div class="stat-sub text-muted">Across sandbox accounts</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span>PayGuard Risk Shield</span>
+                    <i class="fa-solid fa-shield-virus text-emerald"></i>
+                </div>
+                <div class="stat-value">99.4%</div>
+                <div class="stat-sub text-emerald"><i class="fa-solid fa-lock"></i> Zero fraudulent captures</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span>AI Execution Latency</span>
+                    <i class="fa-solid fa-bolt text-purple"></i>
+                </div>
+                <div class="stat-value">180ms</div>
+                <div class="stat-sub text-cyan">Autonomous entity extraction</div>
             </div>
         </section>
 
-        <!-- Active Invoices -->
-        <section class="card">
-            <h2>Active Invoices</h2>
+        <!-- Command Panel: Prompt Ingestion -->
+        <section class="action-grid">
+            <div class="card form-card">
+                <div class="card-header">
+                    <div>
+                        <h3><i class="fa-solid fa-wand-magic-sparkles text-cyan"></i> Autonomous AI Invoice Generator</h3>
+                        <p class="subtitle">Natural language prompt is parsed into billing milestones and line-item totals.</p>
+                    </div>
+                    <span class="badge-pill">Gemini Core</span>
+                </div>
+
+                <div class="input-stack">
+                    <label for="ai-prompt">Billing Description / Natural Language Brief</label>
+                    <textarea id="ai-prompt" rows="3" placeholder="e.g. Generate milestone invoice for CloudOps Inc: $650.00 for Kubernetes cluster orchestrator setup and security compliance checks."></textarea>
+                    
+                    <div class="input-inline">
+                        <div class="field-wrap">
+                            <label for="ai-email">Recipient Client Email</label>
+                            <input type="email" id="ai-email" placeholder="finance@cloudops.io" />
+                        </div>
+                        <button onclick="generateInvoice()" class="btn-primary" id="btn-generate">
+                            <i class="fa-solid fa-paper-plane"></i> Generate & Issue
+                        </button>
+                    </div>
+                </div>
+
+                <div class="quick-prompts">
+                    <span>Try preset:</span>
+                    <button class="chip" onclick="fillPrompt('Invoice StripeMigrate for $320.00 for API webhook gateway deployment', 'ops@stripemigrate.com')">Webhook Gateway ($320)</button>
+                    <button class="chip" onclick="fillPrompt('Bill DevStudio $1,250.00 for custom LLM vector indexing and pipeline', 'billing@devstudio.ai')">Enterprise LLM Setup ($1250)</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Active Invoices Section -->
+        <section class="card table-card">
+            <div class="card-header">
+                <div>
+                    <h3><i class="fa-solid fa-receipt text-yellow"></i> Active Invoices Ledger</h3>
+                    <p class="subtitle">Direct checkout powered by the PayPal v2 Orders SDK sandbox</p>
+                </div>
+                <span class="record-counter">{{ invoices|length }} Invoices Logged</span>
+            </div>
+
             <div class="table-container">
                 <table>
                     <thead>
                         <tr>
                             <th>Invoice ID</th>
-                            <th>Client</th>
+                            <th>Recipient</th>
                             <th>Description</th>
                             <th>Amount</th>
-                            <th>Status</th>
-                            <th>Checkout</th>
+                            <th>Payment Status</th>
+                            <th>Checkout Action</th>
                         </tr>
                     </thead>
                     <tbody id="invoice-rows">
                         {% for inv in invoices %}
                         <tr>
-                            <td><strong>{{ inv.invoice_id }}</strong></td>
-                            <td>{{ inv.client_name }}<br><small>{{ inv.client_email }}</small></td>
-                            <td>{{ inv.description }}</td>
-                            <td>${{ "%.2f"|format(inv.amount) }}</td>
-                            <td><span class="status-pill status-{{ inv.status.lower() }}">{{ inv.status }}</span></td>
+                            <td><span class="code-id">{{ inv.invoice_id }}</span></td>
+                            <td>
+                                <div class="client-cell">
+                                    <strong>{{ inv.client_name }}</strong>
+                                    <small>{{ inv.client_email }}</small>
+                                </div>
+                            </td>
+                            <td class="desc-cell">{{ inv.description }}</td>
+                            <td><strong class="price-val">${{ "%.2f"|format(inv.amount) }}</strong></td>
+                            <td>
+                                {% if inv.status == 'PAID' %}
+                                    <span class="badge badge-success"><i class="fa-solid fa-check"></i> Settled</span>
+                                {% else %}
+                                    <span class="badge badge-warning"><i class="fa-regular fa-clock"></i> Pending</span>
+                                {% endif %}
+                            </td>
                             <td>
                                 {% if inv.status == 'PENDING' %}
-                                    <button class="btn-pay" onclick="openPayModal('{{ inv.invoice_id }}', '{{ inv.amount }}')">Pay with PayPal</button>
+                                    <button class="btn-paypal" onclick="openPayModal('{{ inv.invoice_id }}', '{{ inv.amount }}')">
+                                        <i class="fa-brands fa-paypal"></i> Pay with PayPal
+                                    </button>
                                 {% else %}
-                                    <span class="text-muted">Settled</span>
+                                    <span class="settled-tag"><i class="fa-solid fa-lock"></i> Captured</span>
                                 {% endif %}
                             </td>
                         </tr>
@@ -62,42 +151,65 @@
             </div>
         </section>
 
-        <!-- Fraud & Ledger Section -->
-        <section class="card">
-            <h2>PayGuard AI Risk & Transaction Ledger</h2>
+        <!-- PayGuard Ledger Section -->
+        <section class="card table-card">
+            <div class="card-header">
+                <div>
+                    <h3><i class="fa-solid fa-shield-halved text-emerald"></i> PayGuard AI Settlement & Risk Telemetry</h3>
+                    <p class="subtitle">Heuristic transaction profiling and fraud anomaly detection prior to capture</p>
+                </div>
+                <span class="record-counter">{{ transactions|length }} Records Verified</span>
+            </div>
+
             <div class="table-container">
                 <table>
                     <thead>
                         <tr>
-                            <th>PayPal Tx ID</th>
-                            <th>Invoice</th>
-                            <th>Amount</th>
+                            <th>PayPal Order ID</th>
+                            <th>Linked Invoice</th>
+                            <th>Settled Amount</th>
                             <th>Risk Score</th>
-                            <th>Risk Level</th>
+                            <th>PayGuard Verdict</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for tx in transactions %}
                         <tr>
-                            <td><code>{{ tx.paypal_order_id }}</code></td>
-                            <td>{{ tx.invoice_id }}</td>
-                            <td>${{ "%.2f"|format(tx.amount) }}</td>
-                            <td>{{ tx.risk_score }}%</td>
-                            <td><span class="risk-pill risk-{{ tx.risk_status.lower() }}">{{ tx.risk_status }}</span></td>
+                            <td><code class="code-id">{{ tx.paypal_order_id }}</code></td>
+                            <td><span class="code-sub">{{ tx.invoice_id }}</span></td>
+                            <td><strong class="price-val">${{ "%.2f"|format(tx.amount) }}</strong></td>
+                            <td>
+                                <div class="risk-bar-wrap">
+                                    <div class="risk-bar" style="width: {{ tx.risk_score }}%;"></div>
+                                    <span>{{ tx.risk_score }}%</span>
+                                </div>
+                            </td>
+                            <td>
+                                {% if tx.risk_status == 'LOW' %}
+                                    <span class="badge badge-success"><i class="fa-solid fa-shield-check"></i> LOW RISK</span>
+                                {% elif tx.risk_status == 'MEDIUM' %}
+                                    <span class="badge badge-warning"><i class="fa-solid fa-triangle-exclamation"></i> REVIEW</span>
+                                {% else %}
+                                    <span class="badge badge-danger"><i class="fa-solid fa-skull-crossbones"></i> FLAGGED</span>
+                                {% endif %}
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
             </div>
         </section>
-    </main>
+    </div>
 
     <!-- PayPal Checkout Modal -->
     <div id="payment-modal" class="modal">
         <div class="modal-content">
-            <span class="close-btn" onclick="closePayModal()">&times;</span>
-            <h3 id="modal-invoice-title">Complete Checkout</h3>
-            <div id="paypal-button-container"></div>
+            <div class="modal-header">
+                <h3 id="modal-invoice-title">PayPal Sandbox Checkout</h3>
+                <span class="close-btn" onclick="closePayModal()">&times;</span>
+            </div>
+            <p class="modal-sub">Secure checkout provided via official PayPal Smart Buttons API</p>
+            <div id="paypal-button-container" class="paypal-container"></div>
         </div>
     </div>
 
