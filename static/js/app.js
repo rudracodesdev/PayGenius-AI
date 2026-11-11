@@ -55,3 +55,8 @@ function renderPayPalButtons() {
         }
     }).render("#paypal-button-container");
 }
+
+function fillPrompt(text, email) {
+    document.getElementById("ai-prompt").value = text;
+    document.getElementById("ai-email").value = email;
+}
