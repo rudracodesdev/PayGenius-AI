@@ -3,10 +3,30 @@
   "version": "1.0.0",
   "description": "PayPal AI Hackathon Submission: Autonomous Invoicing & Intelligent Checkout",
   "scripts": {
-    "start": "uvicorn main:app --reload",
+    "dev": "netlify dev --port 8889",
+    "db:generate": "drizzle-kit generate",
+    "start:python": "uvicorn main:app --reload",
     "seed": "python seed_demo_data.py"
   },
-  "keywords": ["paypal", "hackathon", "fastapi", "ai-checkout"],
+  "keywords": [
+    "paypal",
+    "hackathon",
+    "netlify",
+    "ai-checkout"
+  ],
   "author": "Hackathon Builder",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@netlify/database": "^2.0.3",
+    "@netlify/server": "^0.1.6",
+    "drizzle-orm": "^1.0.0-beta.22",
+    "hono": "^4.13.18"
+  },
+  "devDependencies": {
+    "drizzle-kit": "^1.0.0-beta.22"
+  },
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  }
 }

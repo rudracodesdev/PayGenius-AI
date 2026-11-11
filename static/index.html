@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PayGenius AI - Autonomous Commerce & Risk Engine</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <!-- Top Navigation -->
+    <header class="navbar">
+        <div class="nav-left">
+            <div class="logo">
+                <i class="fa-brands fa-paypal"></i> PayGenius <span class="ai-tag">AI</span>
+            </div>
+            <span class="system-badge"><i class="fa-solid fa-circle-check"></i> <span id="paypal-mode">PayPal Sandbox</span></span>
+        </div>
+        <div class="nav-right">
+            <div class="stat-pill"><i class="fa-solid fa-shield-halved"></i> PayGuard Live</div>
+            <div class="user-profile"><i class="fa-regular fa-user"></i> Merchant Admin</div>
+        </div>
+    </header>
+
+    <div class="dashboard-wrapper">
+        <!-- Metric Stats Row -->
+        <section class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span>Total Settled Volume</span>
+                    <i class="fa-solid fa-wallet text-cyan"></i>
+                </div>
+                <div class="stat-value" id="stat-volume">$0.00</div>
+                <div class="stat-sub text-success"><i class="fa-solid fa-arrow-trend-up"></i> <span id="stat-tx-count">0</span> settled payments</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span>Active Invoices</span>
+                    <i class="fa-solid fa-file-invoice-dollar text-yellow"></i>
+                </div>
+                <div class="stat-value" id="stat-invoices">0</div>
+                <div class="stat-sub text-muted">Across sandbox accounts</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span>PayGuard Risk Shield</span>
+                    <i class="fa-solid fa-shield-virus text-emerald"></i>
+                </div>
+                <div class="stat-value">99.4%</div>
+                <div class="stat-sub text-emerald"><i class="fa-solid fa-lock"></i> Zero fraudulent captures</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span>AI Execution Latency</span>
+                    <i class="fa-solid fa-bolt text-purple"></i>
+                </div>
+                <div class="stat-value">180ms</div>
+                <div class="stat-sub text-cyan">Autonomous entity extraction</div>
+            </div>
+        </section>
+
+        <!-- Command Panel: Prompt Ingestion -->
+        <section class="action-grid">
+            <div class="card form-card">
+                <div class="card-header">
+                    <div>
+                        <h3><i class="fa-solid fa-wand-magic-sparkles text-cyan"></i> Autonomous AI Invoice Generator</h3>
+                        <p class="subtitle">Natural language prompt is parsed into billing milestones and line-item totals.</p>
+                    </div>
+                    <span class="badge-pill">Gemini Core</span>
+                </div>
+
+                <div class="input-stack">
+                    <label for="ai-prompt">Billing Description / Natural Language Brief</label>
+                    <textarea id="ai-prompt" rows="3" placeholder="e.g. Generate milestone invoice for CloudOps Inc: $650.00 for Kubernetes cluster orchestrator setup and security compliance checks."></textarea>
+                    
+                    <div class="input-inline">
+                        <div class="field-wrap">
+                            <label for="ai-email">Recipient Client Email</label>
+                            <input type="email" id="ai-email" placeholder="finance@cloudops.io" />
+                        </div>
+                        <button onclick="generateInvoice()" class="btn-primary" id="btn-generate">
+                            <i class="fa-solid fa-paper-plane"></i> Generate & Issue
+                        </button>
+                    </div>
+                </div>
+
+                <div class="quick-prompts">
+                    <span>Try preset:</span>
+                    <button class="chip" onclick="fillPrompt('Invoice StripeMigrate for $320.00 for API webhook gateway deployment', 'ops@stripemigrate.com')">Webhook Gateway ($320)</button>
+                    <button class="chip" onclick="fillPrompt('Bill DevStudio $1,250.00 for custom LLM vector indexing and pipeline', 'billing@devstudio.ai')">Enterprise LLM Setup ($1250)</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Active Invoices Section -->
+        <section class="card table-card">
+            <div class="card-header">
+                <div>
+                    <h3><i class="fa-solid fa-receipt text-yellow"></i> Active Invoices Ledger</h3>
+                    <p class="subtitle">Direct checkout powered by the PayPal v2 Orders SDK sandbox</p>
+                </div>
+                <span class="record-counter"><span id="invoice-count">0</span> Invoices Logged</span>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Invoice ID</th>
+                            <th>Recipient</th>
+                            <th>Description</th>
+                            <th>Amount</th>
+                            <th>Payment Status</th>
+                            <th>Checkout Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="invoice-rows"><tr><td colspan="6" class="text-muted">Loading invoices…</td></tr></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- PayGuard Ledger Section -->
+        <section class="card table-card">
+            <div class="card-header">
+                <div>
+                    <h3><i class="fa-solid fa-shield-halved text-emerald"></i> PayGuard AI Settlement & Risk Telemetry</h3>
+                    <p class="subtitle">Heuristic transaction profiling and fraud anomaly detection prior to capture</p>
+                </div>
+                <span class="record-counter"><span id="tx-count">0</span> Records Verified</span>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>PayPal Order ID</th>
+                            <th>Linked Invoice</th>
+                            <th>Settled Amount</th>
+                            <th>Risk Score</th>
+                            <th>PayGuard Verdict</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tx-rows"><tr><td colspan="5" class="text-muted">Loading transactions…</td></tr></tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+    <!-- PayPal Checkout Modal -->
+    <div id="payment-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-invoice-title">PayPal Sandbox Checkout</h3>
+                <span class="close-btn" onclick="closePayModal()">&times;</span>
+            </div>
+            <p class="modal-sub">Secure checkout provided via official PayPal Smart Buttons API</p>
+            <div id="paypal-button-container" class="paypal-container"></div>
+        </div>
+    </div>
+
+    <script src="/js/app.js"></script>
+</body>
+</html>
