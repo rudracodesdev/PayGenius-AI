@@ -81,6 +81,7 @@ As conversational commerce and AI agent workflows expand, traditional billing po
 │ [ SQLite (Local dev) | Supabase PostgreSQL Pooler (Production Cloud) ] │
 └────────────────────────────────────────────────────────────────────────┘
 
+```
 ## 🚀 Key Features & Innovations
 
 ### 1. ⚡ Autonomous Prompt-to-Invoice Ingestion
@@ -148,7 +149,7 @@ python seed_demo_data.py
 
 # Launch FastAPI web application
 uvicorn main:app --reload
-
+```
 Open https://pay-genius-ai.netlify.app/ in your Browser
 
 ## 📜 Technology Stack
